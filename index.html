@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>IMM-OS OpenMCT</title>
+    <script src="/openmct/openmct.js"></script>
+    <script src="/plugins/imm-telemetry-plugin.js"></script>
+    <style>
+        body { margin: 0; background-color: black; height: 100vh; overflow: hidden; }
+    </style>
+</head>
+<body>
+    <script>
+        openmct.setAssetPath('/openmct');
+        openmct.install(openmct.plugins.LocalStorage());
+        openmct.install(openmct.plugins.MyItems());
+        openmct.install(openmct.plugins.Timeline());
+        openmct.install(openmct.plugins.Espresso());
+        
+        // Install the IMM telemetry plugin
+        openmct.install(IMMTelemetryPlugin());
+
+        openmct.start();
+    </script>
+</body>
+</html>
