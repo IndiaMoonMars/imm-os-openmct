@@ -17,6 +17,7 @@
     <script src="plugins/plugin_commands.js"></script>
     <script src="plugins/plugin_time_system.js"></script>
     <script src="plugins/plugin_eclss_map.js"></script>
+    <script src="plugins/plugin_eva_track.js"></script>
 
     <script>
         // Set public path for openmct bundle
@@ -63,6 +64,7 @@
         openmct.install(IMM_CommandsPlugin());
         openmct.install(IMM_TimeSystemPlugin());
         openmct.install(IMM_EclssMapPlugin());
+        openmct.install(IMM_EvaTrackPlugin());
 
         // Launch Application
         openmct.start(document.getElementById('openmct-layout'));
