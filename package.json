@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "express": "^4.19.2",
+    "express-openid-connect": "^2.17.1",
     "openmct": "^3.1.3"
   }
 }

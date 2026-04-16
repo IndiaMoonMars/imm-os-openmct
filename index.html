@@ -1,25 +1,71 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>IMM-OS OpenMCT</title>
-    <script src="/openmct/openmct.js"></script>
-    <script src="/plugins/imm-telemetry-plugin.js"></script>
+    <title>IMM-OS Mission Dashboard</title>
+    <script src="openmct/openmct.js"></script>
     <style>
-        body { margin: 0; background-color: black; height: 100vh; overflow: hidden; }
+        body, html { height: 100%; margin: 0; padding: 0; }
+        #openmct-layout { width: 100vw; height: 100vh; }
     </style>
 </head>
 <body>
+    <div id="openmct-layout"></div>
+    
+    <!-- Load custom telemetry & functional plugins -->
+    <script src="plugins/plugin_custom_adapter.js"></script>
+    <script src="plugins/plugin_alerts.js"></script>
+    <script src="plugins/plugin_commands.js"></script>
+    <script src="plugins/plugin_time_system.js"></script>
+    <script src="plugins/plugin_eclss_map.js"></script>
+
     <script>
-        openmct.setAssetPath('/openmct');
+        // Set public path for openmct bundle
+        openmct.setAssetPath('openmct');
+        
+        // Disable default NASA demo plugins to maintain a clean IMM schema
+        // openmct.install(openmct.plugins.example.Generator()); // Not used!
+
+        // Install core OpenMCT plugins
         openmct.install(openmct.plugins.LocalStorage());
         openmct.install(openmct.plugins.MyItems());
         openmct.install(openmct.plugins.Timeline());
-        openmct.install(openmct.plugins.Espresso());
-        
-        // Install the IMM telemetry plugin
-        openmct.install(IMMTelemetryPlugin());
+        openmct.install(openmct.plugins.UTCTimeSystem());
+        openmct.install(openmct.plugins.Conductor({
+            menuOptions: [
+                {
+                    name: "Fixed",
+                    timeSystem: 'utc',
+                    bounds: {
+                        start: Date.now() - 30 * 60 * 1000,
+                        end: Date.now()
+                    }
+                },
+                {
+                    name: "Realtime",
+                    timeSystem: 'utc',
+                    clock: 'local',
+                    clockOffsets: {
+                        start: - 15 * 60 * 1000,
+                        end: 2000
+                    }
+                }
+            ]
+        }));
+        openmct.install(openmct.plugins.SummaryWidget());
+        openmct.install(openmct.plugins.DisplayLayout({
+            showAsView: ['summary-widget']
+        }));
+        openmct.install(openmct.plugins.TelemetryTable());
 
-        openmct.start();
+        // Install IMM Customs
+        openmct.install(IMM_CustomAdapter());
+        openmct.install(IMM_AlertsPlugin());
+        openmct.install(IMM_CommandsPlugin());
+        openmct.install(IMM_TimeSystemPlugin());
+        openmct.install(IMM_EclssMapPlugin());
+
+        // Launch Application
+        openmct.start(document.getElementById('openmct-layout'));
     </script>
 </body>
 </html>
