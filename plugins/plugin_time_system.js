@@ -17,7 +17,7 @@ function IMM_TimeSystemPlugin() {
         
         function updateTime() {
             // Fetch IST Time and Mission Day sequentially
-            fetch('/time/api/v1/time/now')
+            IMM_AUTH.fetch('/time/api/v1/time/now')
                 .then(r => r.json())
                 .then(timeRes => {
                     const istString = String(timeRes.ist).split('+')[0]; // Strip tz suffix
@@ -26,7 +26,7 @@ function IMM_TimeSystemPlugin() {
                     const missionDay = Math.max(1, Math.floor((epochSec - 1710000000) / 86400));
                     missionDayStr = `Mission Day ${missionDay}`;
                     
-                    fetch('/time/api/v1/time/delay')
+                    IMM_AUTH.fetch('/time/api/v1/time/delay')
                         .then(r => r.json())
                         .then(delayRes => {
                             let modeText = "No Comm Delay";

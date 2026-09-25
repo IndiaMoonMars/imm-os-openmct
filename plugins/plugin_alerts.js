@@ -5,7 +5,7 @@ function IMM_AlertsPlugin() {
         let lastChecked = Math.floor(Date.now() / 1000) - 30; // Check last 30 seconds initially
         
         function pollAlerts() {
-            fetch(`/api/alerts?since=${lastChecked}`)
+            IMM_AUTH.fetch(`/api/alerts?since=${lastChecked}`)
                 .then(r => r.json())
                 .then(alerts => {
                     alerts.forEach(alert => {

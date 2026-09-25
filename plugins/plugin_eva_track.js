@@ -51,7 +51,7 @@ function IMM_EvaTrackPlugin() {
 
                         // ── WebSocket binding ──────────────────────────────
                         const wsUrl = `ws://${window.location.host}/api/realtime`;
-                        socket = new WebSocket(wsUrl);
+                        socket = IMM_AUTH.authenticateSocket(new WebSocket(wsUrl));
 
                         // Coordinate transform: UWB 10×10m grid → SVG 300×500px habitat rect
                         function uwbToSVG(x, y) {

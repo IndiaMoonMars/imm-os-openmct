@@ -40,7 +40,7 @@ function IMM_EclssMapPlugin() {
 
                         // Tie to realtime WebSocket manually to drive color shift 
                         let socketUrl = `ws://${window.location.host}/api/realtime`;
-                        socket = new WebSocket(socketUrl);
+                        socket = IMM_AUTH.authenticateSocket(new WebSocket(socketUrl));
                         socket.onmessage = function (event) {
                             let msg = JSON.parse(event.data);
                             let py_envelope = msg.data;

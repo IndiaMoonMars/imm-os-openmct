@@ -98,7 +98,7 @@ function IMM_CustomAdapter() {
                 let metric = parts.slice(1).join('_');
 
                 var url = `/api/history?start=${start}&end=${end}&sensor=${sensor}&metric=${metric}`;
-                return fetch(url).then(function (response) {
+                return IMM_AUTH.fetch(url).then(function (response) {
                     return response.json();
                 });
             },
@@ -108,7 +108,7 @@ function IMM_CustomAdapter() {
                 // WebSockets bind directly to the backend
                 let socketUrl = `ws://${window.location.host}/api/realtime`;
                 // Nginx usually strips or maps WS correctly. For dev environment directly hit port 8000 via proxy logic in Nginx '/api/realtime'
-                var socket = new WebSocket(socketUrl);
+                var socket = IMM_AUTH.authenticateSocket(new WebSocket(socketUrl));
                 
                 socket.onmessage = function (event) {
                     let msg = JSON.parse(event.data);

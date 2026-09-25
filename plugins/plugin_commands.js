@@ -25,8 +25,8 @@ function IMM_CommandsPlugin() {
                                 <hr style="border-color: #444; margin-bottom: 20px;">
                                 
                                 <div style="margin-bottom: 15px;">
-                                    <label>Operator ID:</label><br>
-                                    <input type="text" id="cmd-operator" value="MCC-Lead" style="width: 100%; padding: 8px; margin-top: 5px; background: #111; color: #0f0; border: 1px solid #555;">
+                                    <label>Operator (logged in):</label><br>
+                                    <input type="text" id="cmd-operator" readonly value="" style="width: 100%; padding: 8px; margin-top: 5px; background: #111; color: #0f0; border: 1px solid #555;">
                                 </div>
                                 <div style="margin-bottom: 15px;">
                                     <label>Command Payload:</label><br>
@@ -37,21 +37,19 @@ function IMM_CommandsPlugin() {
                             </div>
                         `;
                         container.innerHTML = template;
+                        document.getElementById('cmd-operator').value = IMM_AUTH.username();
                         
                         document.getElementById('cmd-send').addEventListener('click', () => {
-                            const operator = document.getElementById('cmd-operator').value;
                             const payload = document.getElementById('cmd-payload').value;
                             const statusEl = document.getElementById('cmd-status');
                             
                             statusEl.innerText = "Transmitting to deep space...";
                             
-                            fetch('/api/commands', {
+                            IMM_AUTH.fetch('/api/commands', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
-                                body: JSON.stringify({
-                                    operator_id: operator,
-                                    command_text: payload
-                                })
+                                // operator is taken from the token server-side
+                                body: JSON.stringify({ command_text: payload })
                             }).then(res => {
                                 if (res.ok) {
                                     statusEl.innerText = "✓ Command ingested successfully into PG Log.";

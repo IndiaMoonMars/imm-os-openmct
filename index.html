@@ -11,6 +11,10 @@
 <body>
     <div id="openmct-layout"></div>
     
+    <!-- Keycloak login: every plugin request carries the operator's token -->
+    <script src="keycloak/keycloak.min.js"></script>
+    <script src="plugins/imm_auth.js"></script>
+
     <!-- Load custom telemetry & functional plugins -->
     <script src="plugins/plugin_custom_adapter.js"></script>
     <script src="plugins/plugin_alerts.js"></script>
@@ -27,6 +31,7 @@
         // openmct.install(openmct.plugins.example.Generator()); // Not used!
 
         // Install core OpenMCT plugins
+        openmct.install(openmct.plugins.Espresso());   // dark theme (OpenMCT 3.x ships its CSS via a theme plugin)
         openmct.install(openmct.plugins.LocalStorage());
         openmct.install(openmct.plugins.MyItems());
         openmct.install(openmct.plugins.Timeline());
@@ -56,18 +61,26 @@
         openmct.install(openmct.plugins.DisplayLayout({
             showAsView: ['summary-widget']
         }));
-        openmct.install(openmct.plugins.TelemetryTable());
+        // Telemetry tables are installed by default in OpenMCT 3.x (plugins.TelemetryTable is
+        // a module there, not an install function; calling it threw before start()).
 
-        // Install IMM Customs
-        openmct.install(IMM_CustomAdapter());
-        openmct.install(IMM_AlertsPlugin());
-        openmct.install(IMM_CommandsPlugin());
-        openmct.install(IMM_TimeSystemPlugin());
-        openmct.install(IMM_EclssMapPlugin());
-        openmct.install(IMM_EvaTrackPlugin());
+        // Log in first: the IMM plugins start polling and streaming as soon as they install
+        IMM_AUTH.init().then(function () {
+            // Install IMM Customs
+            openmct.install(IMM_CustomAdapter());
+            openmct.install(IMM_AlertsPlugin());
+            openmct.install(IMM_CommandsPlugin());
+            openmct.install(IMM_TimeSystemPlugin());
+            openmct.install(IMM_EclssMapPlugin());
+            openmct.install(IMM_EvaTrackPlugin());
 
-        // Launch Application
-        openmct.start(document.getElementById('openmct-layout'));
+            // Launch Application
+            openmct.start(document.getElementById('openmct-layout'));
+        }).catch(function (err) {
+            console.error('IMM-OS login failed', err);
+            document.getElementById('openmct-layout').innerText =
+                'Could not reach the IMM-OS identity service. Check that Keycloak is running and reload.';
+        });
     </script>
 </body>
 </html>
