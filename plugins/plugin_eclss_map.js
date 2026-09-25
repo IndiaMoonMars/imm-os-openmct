@@ -53,7 +53,7 @@ function IMM_EclssMapPlugin() {
                                 
                                 // Assuming zone is provided, else fallback mapping
                                 let targetCircle = "z1-temp-ind"; 
-                                if(py_envelope.zone === "zone2") targetCircle = "z2-temp-ind";
+                                if(py_envelope.zone === "zone2" || py_envelope.zone === "zone_b") targetCircle = "z2-temp-ind";
                                 
                                 let el = document.getElementById(targetCircle);
                                 if(el) el.setAttribute("fill", color);
@@ -71,11 +71,11 @@ function IMM_EclssMapPlugin() {
         
         // Auto-add default map object root
         openmct.objects.addRoot({
-            namespace: 'imm.taxonomy',
+            namespace: 'imm.eclss',
             key: 'imm.eclss'
         });
         
-        openmct.objects.addProvider('imm.taxonomy', {
+        openmct.objects.addProvider('imm.eclss', {
             get: function(identifier) {
                 if (identifier.key === 'imm.eclss') {
                     return Promise.resolve({
@@ -85,6 +85,7 @@ function IMM_EclssMapPlugin() {
                         location: 'ROOT'
                     });
                 }
+                return Promise.resolve(undefined);  // not one of ours
             }
         });
     };

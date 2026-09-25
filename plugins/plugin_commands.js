@@ -76,11 +76,11 @@ function IMM_CommandsPlugin() {
         
         // Auto-add default object
         openmct.objects.addRoot({
-            namespace: 'imm.taxonomy',
+            namespace: 'imm.uplink',
             key: 'imm.uplink'
         });
         
-        openmct.objects.addProvider('imm.taxonomy', {
+        openmct.objects.addProvider('imm.uplink', {
             get: function(identifier) {
                 if (identifier.key === 'imm.uplink') {
                     return Promise.resolve({
@@ -90,6 +90,7 @@ function IMM_CommandsPlugin() {
                         location: 'ROOT'
                     });
                 }
+                return Promise.resolve(undefined);  // not one of ours
             }
         });
     };

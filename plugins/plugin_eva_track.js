@@ -132,8 +132,8 @@ function IMM_EvaTrackPlugin() {
         openmct.objectViews.addProvider(EvaTrackViewProvider);
 
         // Auto-add root object
-        openmct.objects.addRoot({ namespace: 'imm.taxonomy', key: 'imm.eva' });
-        openmct.objects.addProvider('imm.taxonomy', {
+        openmct.objects.addRoot({ namespace: 'imm.eva', key: 'imm.eva' });
+        openmct.objects.addProvider('imm.eva', {
             get: function (identifier) {
                 if (identifier.key === 'imm.eva') {
                     return Promise.resolve({
@@ -143,6 +143,7 @@ function IMM_EvaTrackPlugin() {
                         location: 'ROOT'
                     });
                 }
+                return Promise.resolve(undefined);  // not one of ours
             }
         });
     };
