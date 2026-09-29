@@ -29,7 +29,13 @@ function IMM_CustomAdapter() {
             { sensor: "sysmon", metric: "cpu_temp", zone: "zone_a", name: "Zone A Node SoC Temperature", units: "°C" },
             { sensor: "sysmon", metric: "cpu_temp", zone: "zone_b", name: "Zone B Node SoC Temperature", units: "°C" },
             { sensor: "bms", metric: "battery_pct", name: "Battery State of Charge", units: "%" },
-            { sensor: "bms", metric: "solar_w", name: "Solar Input", units: "W" }
+            { sensor: "bms", metric: "solar_w", name: "Solar Input", units: "W" },
+            { sensor: "geiger", metric: "usv_h", name: "External Radiation Dose Rate", units: "µSv/h" },
+            { sensor: "geiger", metric: "cpm", name: "External Geiger Count Rate", units: "CPM" },
+            { sensor: "gnss", metric: "sats", name: "GNSS Satellites", units: "" },
+            { sensor: "gnss", metric: "lat", name: "GNSS Latitude", units: "°" },
+            { sensor: "gnss", metric: "lon", name: "GNSS Longitude", units: "°" },
+            { sensor: "gnss", metric: "alt_m", name: "GNSS Altitude", units: "m" }
         ].map(s => Object.assign({ id: `${s.sensor}_${s.metric}` + (s.zone ? `_${s.zone}` : '') }, s));
 
         const streamFor = key => SENSOR_STREAM_MAPPING.find(s => s.id === key);
