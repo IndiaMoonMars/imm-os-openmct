@@ -40,11 +40,12 @@ function IMM_EclssMapPlugin() {
 
                         // Tie to realtime WebSocket manually to drive color shift 
                         let socketUrl = `ws://${window.location.host}/api/realtime`;
-                        socket = new WebSocket(socketUrl);
+                        socket = IMM_AUTH.authenticateSocket(new WebSocket(socketUrl));
                         socket.onmessage = function (event) {
-                            let msg = JSON.parse(event.data);
-                            let py_envelope = msg.data;
-                            if(py_envelope.temp) {
+                            let msg;
+                            try { msg = JSON.parse(event.data); } catch (e) { return; }
+                            let py_envelope = msg && msg.data;
+                            if (py_envelope && typeof py_envelope.temp === 'number') {
                                 // Temperature color bounds mapping logic
                                 let t = py_envelope.temp;
                                 let color = "green";
@@ -53,7 +54,7 @@ function IMM_EclssMapPlugin() {
                                 
                                 // Assuming zone is provided, else fallback mapping
                                 let targetCircle = "z1-temp-ind"; 
-                                if(py_envelope.zone === "zone2") targetCircle = "z2-temp-ind";
+                                if(py_envelope.zone === "zone2" || py_envelope.zone === "zone_b") targetCircle = "z2-temp-ind";
                                 
                                 let el = document.getElementById(targetCircle);
                                 if(el) el.setAttribute("fill", color);
@@ -71,11 +72,11 @@ function IMM_EclssMapPlugin() {
         
         // Auto-add default map object root
         openmct.objects.addRoot({
-            namespace: 'imm.taxonomy',
+            namespace: 'imm.eclss',
             key: 'imm.eclss'
         });
         
-        openmct.objects.addProvider('imm.taxonomy', {
+        openmct.objects.addProvider('imm.eclss', {
             get: function(identifier) {
                 if (identifier.key === 'imm.eclss') {
                     return Promise.resolve({
@@ -85,6 +86,7 @@ function IMM_EclssMapPlugin() {
                         location: 'ROOT'
                     });
                 }
+                return Promise.resolve(undefined);  // not one of ours
             }
         });
     };
