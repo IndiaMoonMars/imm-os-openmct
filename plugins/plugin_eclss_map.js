@@ -42,9 +42,10 @@ function IMM_EclssMapPlugin() {
                         let socketUrl = `ws://${window.location.host}/api/realtime`;
                         socket = IMM_AUTH.authenticateSocket(new WebSocket(socketUrl));
                         socket.onmessage = function (event) {
-                            let msg = JSON.parse(event.data);
-                            let py_envelope = msg.data;
-                            if(py_envelope.temp) {
+                            let msg;
+                            try { msg = JSON.parse(event.data); } catch (e) { return; }
+                            let py_envelope = msg && msg.data;
+                            if (py_envelope && typeof py_envelope.temp === 'number') {
                                 // Temperature color bounds mapping logic
                                 let t = py_envelope.temp;
                                 let color = "green";

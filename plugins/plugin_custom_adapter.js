@@ -126,8 +126,9 @@ function IMM_CustomAdapter() {
                 var socket = IMM_AUTH.authenticateSocket(new WebSocket(socketUrl));
                 
                 socket.onmessage = function (event) {
-                    let msg = JSON.parse(event.data);
-                    let py_envelope = msg.data;
+                    let msg;
+                    try { msg = JSON.parse(event.data); } catch (e) { return; }
+                    let py_envelope = msg && msg.data;
                     
                     if (stream && py_envelope && py_envelope.sensor === stream.sensor &&
                         (!stream.zone || py_envelope.zone === stream.zone)) {
